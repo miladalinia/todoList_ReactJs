@@ -9,8 +9,13 @@ function Todo(props) {
     const todosContext = useContext(TodosContext);
 
     let editHandler = text => {
-        todosContext.edit(item.key, text);
+        todosContext.dispatch({ type : 'edit_todo' , payload : { key : item.key , text }})
         setEdit(false);
+    }
+
+    let deleteHandler = e => {
+        // ajax
+        todosContext.dispatch({ type : 'delete_todo' , payload : { key : item.key}})
     }
 
     return (
@@ -26,13 +31,13 @@ function Todo(props) {
                                 <div>
                                     <button type="button"
                                             className={`btn btn-sm m-lg-1 ${item.done ? 'btn-secondary' : 'btn-success'}`}
-                                            onClick={() => todosContext.done(item.key)}>{item.done ? 'undone' : 'done'}
+                                            onClick={() => todosContext.dispatch({ type : 'toggle_todo' , payload : { key : item.key}})}>{item.done ? 'undone' : 'done'}
                                     </button>
                                     <button type="button" className="btn btn-info btn-sm"
                                             onClick={() => setEdit(true)}>edit
                                     </button>
                                     <button type="button" className="btn btn-danger btn-sm m-lg-1"
-                                            onClick={() => todosContext.delete(item.key)}>delete
+                                            onClick={deleteHandler}>delete
                                     </button>
                                 </div>
                             </div>

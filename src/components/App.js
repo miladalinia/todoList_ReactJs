@@ -1,75 +1,56 @@
-import React, {Component} from 'react'
+import React, {useEffect, useReducer} from 'react'
 import 'bootstrap/dist/css/bootstrap.css'
 
 //Import Components
 import Header from "./Layout/Header";
 import FormAddTodo from "./Todo/FormAddTodo";
 import TodoList from "./Todo/TodoList";
+//import Contexts
 import TodosContext from "../Context/todos";
+import AuthContext from "../Context/auth";
+//import Reducers
+import AppReducer from "../Reducers/appReducer";
+import axios from "axios";
 
-class App extends Component {
-    state = {
-        todos: []
+function App() {
+
+    const [state, dispatch] = useReducer(AppReducer, {
+        todos: [],
+        authenticated: false
+    })
+
+    useEffect(() => {
+        axios.get('https://reacttestapi-3ba14-default-rtdb.asia-southeast1.firebasedatabase.app/todos.json')
+            .then(response => console.log(jsonHandler(response.data)))
+            .catch(err => console.log(err));
+    }, []);
+
+    let jsonHandler = (data) => {
+        let todos = Object
+            .entries(data)
+            .map(([key, value]) => {
+                return {
+                    ...value,
+                    key
+                }
+            });
+
+        dispatch({type: 'init_todo', payload: {todos}})
     }
 
-    addTodo(text) {
-        this.setState(prevState => {
-            return {
-                todos: [
-                    ...prevState.todos,
-                    {key: Date.now(), done: false, text}
-                ],
-            }
-        })
-    }
-
-    editTodo(key, text) {
-        let {todos} = this.state;
-        let item = todos.find(item => item.key === key);
-        item.text = text;
-
-        let newTodos = todos.filter(item => item.key !== key)
-
-        this.setState({
-            todos: [
-                ...newTodos,
-                item
-            ]
-        })
-    }
-
-    deleteTodo(key) {
-        this.setState(prevState => {
-            return {
-                todos: prevState.todos.filter(item => item.key !== key)
-            }
-        })
-    }
-
-    toggleTodo(key) {
-        let {todos} = this.state;
-        let item = todos.find(item => item.key === key);
-        item.done = !item.done;
-
-        let newTodos = todos.filter(item => item.key !== key)
-
-        this.setState({
-            todos: [
-                ...newTodos,
-                item
-            ]
-        })
-    }
-
-    render() {
-
-        return (
+    return (
+        <AuthContext.Provider value={{
+            authenticated: state.authenticated,
+            dispatch
+        }}>
             <TodosContext.Provider value={{
-                todos: this.state.todos,
-                done: this.toggleTodo.bind(this),
-                delete: this.deleteTodo.bind(this),
-                edit: this.editTodo.bind(this),
-                add: this.addTodo.bind(this)
+                todos: state.todos,
+                dispatch
+                // todos: this.state.todos,
+                // done: this.toggleTodo.bind(this),
+                // delete: this.deleteTodo.bind(this),
+                // edit: this.editTodo.bind(this),
+                // add: this.addTodo.bind(this)
             }}>
                 <div className="App">
                     <Header/>
@@ -78,13 +59,13 @@ class App extends Component {
                             <div className="container d-flex flex-column align-items-center">
                                 <h1 className="jumbotron-heading">Welcome!</h1>
                                 <p className="lead text-muted">To get started, add some items to your list:</p>
-                                <FormAddTodo />
+                                <FormAddTodo/>
                             </div>
                         </section>
                         <div className="todosList">
                             <div className="container">
                                 <div className="d-flex flex-column align-items-center">
-                                    <TodoList />
+                                    <TodoList/>
                                 </div>
 
                             </div>
@@ -92,8 +73,8 @@ class App extends Component {
                     </main>
                 </div>
             </TodosContext.Provider>
-        )
-    }
+        </AuthContext.Provider>
+    )
 }
 
 export default App;
