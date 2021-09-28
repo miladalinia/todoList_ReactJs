@@ -15,19 +15,21 @@ function FormAddTodo(props) {
     let formHandler = e => {
         e.preventDefault();
         //ajax
-        let todo = {
-            text: text,
-            done: false
-        }
-        axios.post('https://reacttestapi-3ba14-default-rtdb.asia-southeast1.firebasedatabase.app/todos.json', todo)
-            .then(response => todosContext.dispatch({
-                type: 'add_todo',
-                payload: {todo: {...todo, key: response.data.name}}
-            }))
-            .catch(err => console.log(err))
+        if (text.length > 1) {
+            let todo = {
+                text: text,
+                done: false
+            }
+            axios.post('https://reacttestapi-3ba14-default-rtdb.asia-southeast1.firebasedatabase.app/todos.json', todo)
+                .then(response => todosContext.dispatch({
+                    type: 'add_todo',
+                    payload: {todo: {...todo, key: response.data.name}}
+                }))
+                .catch(err => console.log(err))
 
-        // todosContext.dispatch({type: 'add_todo', payload: {text}});
-        setText('');
+            // todosContext.dispatch({type: 'add_todo', payload: {text}});
+            setText('');
+        }
     }
 
     let inputHandler = e => setText(e.target.value);

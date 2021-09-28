@@ -10,8 +10,23 @@ function Todo(props) {
     const todosContext = useContext(TodosContext);
 
     let editHandler = text => {
-        todosContext.dispatch({type: 'edit_todo', payload: {key: item.key, text}})
+        //ajax
+        axios.put(`https://reacttestapi-3ba14-default-rtdb.asia-southeast1.firebasedatabase.app/todos/${item.key}.json`, {
+            done: item.done,
+            text
+        }).then(response => {
+            todosContext.dispatch({type: 'edit_todo', payload: {key: item.key, text}})
+        }).catch(err => console.log(err));
         setEdit(false);
+    }
+
+    let doneHandler = e => {
+        axios.put(`https://reacttestapi-3ba14-default-rtdb.asia-southeast1.firebasedatabase.app/todos/${item.key}.json`, {
+            done: !item.done,
+            text: item.text
+        }).then(response => {
+            todosContext.dispatch({type: 'toggle_todo', payload: {key: item.key}});
+        }).catch(err => console.log(err));
     }
 
     let deleteHandler = e => {
@@ -36,10 +51,7 @@ function Todo(props) {
                                 <div>
                                     <button type="button"
                                             className={`btn btn-sm m-lg-1 ${item.done ? 'btn-secondary' : 'btn-success'}`}
-                                            onClick={() => todosContext.dispatch({
-                                                type: 'toggle_todo',
-                                                payload: {key: item.key}
-                                            })}>{item.done ? 'undone' : 'done'}
+                                            onClick={doneHandler}>{item.done ? 'undone' : 'done'}
                                     </button>
                                     <button type="button" className="btn btn-info btn-sm"
                                             onClick={() => setEdit(true)}>edit
