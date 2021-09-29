@@ -1,4 +1,4 @@
-import React, {useEffect, useReducer} from 'react'
+import React, {useEffect, useReducer, useState} from 'react'
 import 'bootstrap/dist/css/bootstrap.css'
 
 //Import Components
@@ -19,13 +19,18 @@ function App() {
         authenticated: false
     })
 
+    const [loading, setLoading] = useState();
+
     useEffect(() => {
+        setLoading(true);
         axios.get('https://reacttestapi-3ba14-default-rtdb.asia-southeast1.firebasedatabase.app/todos.json')
             .then(response => console.log(jsonHandler(response.data)))
             .catch(err => console.log(err));
     }, []);
 
     let jsonHandler = (data) => {
+        setLoading(false);
+
         let todos = Object
             .entries(data)
             .map(([key, value]) => {
@@ -65,7 +70,13 @@ function App() {
                         <div className="todosList">
                             <div className="container">
                                 <div className="d-flex flex-column align-items-center">
-                                    <TodoList/>
+                                    {
+                                        loading
+                                            ? <h2>Loading data ...</h2>
+                                            : (
+                                                <TodoList/>
+                                            )
+                                    }
                                 </div>
 
                             </div>
