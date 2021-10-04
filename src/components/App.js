@@ -1,6 +1,6 @@
 import React, {useEffect, useReducer, useState} from 'react'
 import 'bootstrap/dist/css/bootstrap.css'
-import {BrowserRouter, Route} from "react-router-dom";
+import {BrowserRouter, Route, Switch} from "react-router-dom";
 
 //Import Components
 import Header from "./Layout/Header";
@@ -41,10 +41,14 @@ function App() {
                     <div className="App">
                         <Header/>
                         <main>
-                            <Route exact path="/" component={Home}/>
-                            <Route path="/about" component={About}/>
-                            <Route path="/contact" component={Contact}/>
-                            <Route path="/todos/:id" component={TodoDetails}/>
+                            {/*When using the Switch Component, the parameter URL must contain the last path */}
+                            <Switch>
+                                <Route exact path="/" component={Home}/>
+                                <Route path="/about" component={About}/>
+                                <Route path="/contact" component={Contact}/>
+                                {/*is last because it has parameter*/}
+                                <Route path="/:id" component={TodoDetails}/>
+                            </Switch>
                         </main>
                     </div>
                 </TodosContext.Provider>
