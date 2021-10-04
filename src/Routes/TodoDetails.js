@@ -12,7 +12,12 @@ function TodoDetails(props) {
         axios.get(`https://reacttestapi-3ba14-default-rtdb.asia-southeast1.firebasedatabase.app/todos/${params.id}.json`)
             .then(response => {
                 setLoading(false);
-                setTodo({...response.data, key: params.id});
+                if (response.data){
+                    setTodo({...response.data, key: params.id});
+                }else {
+                    // redirect to 404 page
+                    props.history.push('/404');
+                }
             })
             .catch(err => console.log(err));
     }, []);

@@ -47,7 +47,7 @@ function Todo(props) {
                         <div className="col-6 mb-2">
                             <div className="d-flex justify-content-between align-items-center border rounded p-3">
                                 <div>
-                                    <Link to={`/${item.key}`}>{item.text}</Link>
+                                    <Link to={`/todos/${item.key}`}>{item.text}</Link>
                                 </div>
                                 <div>
                                     <button type="button"

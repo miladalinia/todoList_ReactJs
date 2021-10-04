@@ -14,6 +14,7 @@ import Home from "../Routes/Home";
 import About from "../Routes/About";
 import Contact from "../Routes/Contact";
 import TodoDetails from "../Routes/TodoDetails";
+import NotFound from "../Routes/NotFound";
 
 function App() {
 
@@ -47,7 +48,9 @@ function App() {
                                 <Route path="/about" component={About}/>
                                 <Route path="/contact" component={Contact}/>
                                 {/*is last because it has parameter*/}
-                                <Route path="/:id" component={TodoDetails}/>
+                                <Route path="/todos/:id" component={TodoDetails}/>
+                                <Route path="/404" component={NotFound}/>
+                                <Route component={NotFound}/>
                             </Switch>
                         </main>
                     </div>
